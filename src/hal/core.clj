@@ -34,7 +34,7 @@
    (fn [res [k embedded]]
      (if embedded
        (-> (assoc-in res [:_embedded k] embedded)
-           (assoc-href k (-> embedded :_links :self :href))
+           (with-hrefs k (-> embedded :_links :self :href))
            identity)
        res))
    res (partition 2 kvs)))

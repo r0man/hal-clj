@@ -1,4 +1,4 @@
-(defproject hal-clj "0.1.0-SNAPSHOT"
+(defproject hal-clj "0.1.0"
   :description "Clojure library for the Hypertext Application Language"
   :url "https://github.com/r0man/hal-clj"
   :license {:name "Eclipse Public License"

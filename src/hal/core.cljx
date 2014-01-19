@@ -1,9 +1,14 @@
 (ns hal.core
   (:refer-clojure :exclude [keys vals])
+  #+cljs (:require-macros [cljs.core.async.macros :refer [go]]
+                          [hal.core :refer [defhttp]])
   (:require [clojure.string :refer [blank?]]
             [no.en.core :refer [format-url parse-integer]]
+            [request.core :as request]
             #+clj [clojure.core :as core]
-            #+cljs [cljs.core :as core]))
+            #+clj [clojure.core.async :as async]
+            #+cljs [cljs.core :as core]
+            #+cljs [cljs.core.async :as async]))
 
 (def ^:dynamic *defaults*
   {:page :page
@@ -82,3 +87,45 @@
         :next (next-url req opts)
         :prev (prev-url req opts))
       (with-embedded name coll)))
+
+(defn http< [res link & [opts]]
+  (if-let [url (href res link)]
+    (async/map<
+     request/with-meta-resp
+     (request/http< (assoc opts :method :get :url url)))
+    (throw (ex-info (str "Can't find HAL link: " (name link))
+                    {:link link :resource res}))))
+
+#+clj
+(defmacro defhttp
+  "Define core.async HTTP functions that operate on HAL resources."
+  [& methods]
+  `(do ~@(for [method# methods]
+           `(do (defn ~(symbol (str (name method#) "<"))
+                  [~'res ~'link & [~'opts]]
+                  (->> (assoc ~'opts :method ~(keyword method#))
+                       (hal.core/http< ~'res ~'link)))))))
+
+(defhttp delete get head patch patch post put)
+
+(comment
+
+  (require '[clojure.core.async :refer [go <! <!!]])
+
+  (def europe-r
+    (with-hrefs {:name "Europe"}
+      :self "http://api.burningswell.dev/continents/4"))
+
+  (:name (<!! (get< europe-r :self)))
+
+  (let [continent (<!! (get< europe-r :self))
+        users (<!! (get< continent :users))]
+    (prn (:name continent))
+    (prn (count users)))
+
+  (go (let [continent (<! (get< europe-r :self))
+            users (<! (get< continent :countries))]
+        (prn (:name continent))
+        (prn users)))
+
+  )

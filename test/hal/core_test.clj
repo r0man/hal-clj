@@ -4,12 +4,12 @@
             [hal.core :refer :all]))
 
 (def europe
-  {:name "Europe"
-   :_links {:self {:href "http://example.com/continents/1"}}})
+  (with-hrefs {:name "Europe"}
+    :self "http://example.com/continents/1"))
 
 (def germany
-  {:name "Germany"
-   :_links {:self {:href "http://example.com/countries/1"}}})
+  (with-hrefs {:name "Germany"}
+    :self "http://example.com/countries/1"))
 
 (deftest test-with-hrefs
   (is (= (with-hrefs {}

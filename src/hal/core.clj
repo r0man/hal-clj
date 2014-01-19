@@ -18,9 +18,6 @@
 (defn href [res k]
   (:href (get (links res) k)))
 
-(defn self-href [res]
-  (-> res :_links :self :href))
-
 (defn with-hrefs
   [res & kvs]
   (reduce
@@ -36,7 +33,7 @@
    (fn [res [k embedded]]
      (if embedded
        (-> (assoc-in res [:_embedded k] embedded)
-           (with-hrefs k (self-href embedded)))
+           (with-hrefs k (href embedded :self)))
        res))
    res (partition 2 kvs)))
 

@@ -34,7 +34,6 @@
    (fn [res [k embedded]]
      (if embedded
        (-> (assoc-in res [:_embedded k] embedded)
-           (with-hrefs k (self-href embedded))
-           identity)
+           (with-hrefs k (self-href embedded)))
        res))
    res (partition 2 kvs)))

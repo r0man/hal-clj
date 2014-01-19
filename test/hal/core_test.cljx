@@ -83,3 +83,25 @@
     (is (= "http://example.com/continents?page=2" (hal/href res :self)))
     (is (= "http://example.com/continents?page=3" (hal/href res :next)))
     (is (= "http://example.com/continents?page=1" (hal/href res :prev)))))
+
+(comment
+
+  (require '[clojure.core.async :refer [go <! <!!]])
+
+  (def europe-r
+    (with-hrefs {:name "Europe"}
+      :self "http://api.burningswell.dev/continents/4"))
+
+  (:name (<!! (get< europe-r :self)))
+
+  (let [continent (<!! (get< europe-r :self))
+        users (<!! (get< continent :users))]
+    (prn (:name continent))
+    (prn (count users)))
+
+  (go (let [continent (<! (get< europe-r :self))
+            users (<! (get< continent :countries))]
+        (prn (:name continent))
+        (prn users)))
+
+  )

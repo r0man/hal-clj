@@ -55,14 +55,12 @@
 (defn vals [res]
   (map res (keys res)))
 
-(defn self-url [req])
-
 (defn- extract-page [req & [opts]]
   (let [k (:page (merge *defaults* opts))]
     [k (parse-integer (get-in req [:query-params k]))]))
 
 (defn next-url
-  "Returns the URL to the next resource."
+  "Build the URL for the next HAL resources from the Ring `request`."
   [req & [opts]]
   (if-not (blank? (:uri req))
     (let [[k v] (extract-page req opts)]
@@ -70,7 +68,7 @@
           (format-url)))))
 
 (defn prev-url
-  "Returns the URL to the previous resource."
+  "Build the URL for the previous HAL resources from the Ring `request`."
   [req & [opts]]
   (if-not (blank? (:uri req))
     (let [[k v] (extract-page req opts)]
@@ -78,17 +76,25 @@
         (-> (assoc-in req [:query-params k] (dec v))
             (format-url))))))
 
-(defn resource [req res & [opts]]
+(defn resource
+  "Make a HAL resource for the Ring request `req` and the
+  resource `res`."
+  [req res & [opts]]
   (-> (with-hrefs res :self (format-url req))))
 
-(defn resources [req name coll & [opts]]
+(defn resources
+  "Make a HAL resource for the Ring request `req` and the resources
+  `coll`."
+  [req name coll & [opts]]
   (-> (with-hrefs {}
         :self (format-url req)
         :next (next-url req opts)
         :prev (prev-url req opts))
       (with-embedded name coll)))
 
-(defn http< [res link & [opts]]
+(defn http<
+  "Fetch HAL resources via core.async."
+  [res link & [opts]]
   (if-let [url (href res link)]
     (async/map<
      request/with-meta-resp
@@ -107,25 +113,3 @@
                        (hal.core/http< ~'res ~'link)))))))
 
 (defhttp delete get head patch patch post put)
-
-(comment
-
-  (require '[clojure.core.async :refer [go <! <!!]])
-
-  (def europe-r
-    (with-hrefs {:name "Europe"}
-      :self "http://api.burningswell.dev/continents/4"))
-
-  (:name (<!! (get< europe-r :self)))
-
-  (let [continent (<!! (get< europe-r :self))
-        users (<!! (get< continent :users))]
-    (prn (:name continent))
-    (prn (count users)))
-
-  (go (let [continent (<! (get< europe-r :self))
-            users (<! (get< continent :countries))]
-        (prn (:name continent))
-        (prn users)))
-
-  )

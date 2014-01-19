@@ -1,5 +1,7 @@
 (ns hal.core
-  (:require [clojure.string :refer [blank?]]))
+  (:refer-clojure :exclude [keys vals])
+  (:require [clojure.core :as core]
+            [clojure.string :refer [blank?]]))
 
 (defn embedded
   ([res]
@@ -37,3 +39,10 @@
            (with-hrefs k (self-href embedded)))
        res))
    res (partition 2 kvs)))
+
+(defn keys [res]
+  (let [ks (core/keys res)]
+    (remove #{:_embedded :_links} ks)))
+
+(defn vals [res]
+  (map res (keys res)))

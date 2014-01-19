@@ -1,7 +1,8 @@
 (ns hal.core
   (:refer-clojure :exclude [keys vals])
-  (:require [clojure.core :as core]
-            [clojure.string :refer [blank?]]))
+  (:require [clojure.string :refer [blank?]]
+            #+clj [clojure.core :as core]
+            #+cljs [cljs.core :as core]))
 
 (defn embedded
   ([res]

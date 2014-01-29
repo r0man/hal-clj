@@ -5,10 +5,10 @@
             :url "http://www.eclipse.org/legal/epl-v10.html"}
   :lein-release {:deploy-via :clojars}
   :cljsbuild {:builds []}
-  :dependencies [[noencore "0.1.11"]
-                 [request-clj "0.2.1-SNAPSHOT"]]
+  :dependencies [[noencore "0.1.12"]
+                 [request-clj "0.2.0"]]
   :profiles {:dev {:dependencies [[org.clojure/clojure "1.5.1"]
-                                  [org.clojure/clojurescript "0.0-2138"]
+                                  [org.clojure/clojurescript "0.0-2156"]
                                   [org.slf4j/slf4j-log4j12 "1.7.5"]]
                    :plugins [[com.keminglabs/cljx "0.3.2"] ;; Must be before Austin: https://github.com/cemerick/austin/issues/37
                              [com.cemerick/austin "0.1.3"]

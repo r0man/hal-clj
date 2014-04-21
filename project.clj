@@ -5,15 +5,14 @@
             :url "http://www.eclipse.org/legal/epl-v10.html"}
   :lein-release {:deploy-via :clojars}
   :cljsbuild {:builds []}
-  :dependencies [[noencore "0.1.11"]
-                 [request-clj "0.2.1-SNAPSHOT"]]
-  :profiles {:dev {:dependencies [[org.clojure/clojure "1.5.1"]
-                                  [org.clojure/clojurescript "0.0-2138"]
-                                  [org.slf4j/slf4j-log4j12 "1.7.5"]]
+  :dependencies [[noencore "0.1.15"]
+                 [request-clj "0.2.2"]]
+  :profiles {:dev {:dependencies [[org.clojure/clojure "1.6.0"]
+                                  [org.clojure/clojurescript "0.0-2202"]]
                    :plugins [[com.keminglabs/cljx "0.3.2"] ;; Must be before Austin: https://github.com/cemerick/austin/issues/37
                              [com.cemerick/austin "0.1.3"]
-                             [com.cemerick/clojurescript.test "0.2.2-SNAPSHOT"]
-                             [lein-cljsbuild "1.0.1"]]
+                             [com.cemerick/clojurescript.test "0.3.0"]
+                             [lein-cljsbuild "1.0.3"]]
                    :hooks [cljx.hooks leiningen.cljsbuild]
                    :cljx {:builds [{:source-paths ["src"]
                                     :output-path "target/classes"

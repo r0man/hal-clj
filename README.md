@@ -1,6 +1,6 @@
 # HAL-CLJ
-	[![Build Status](https://travis-ci.org/r0man/hal-clj.png)](https://travis-ci.org/r0man/hal-clj)
-	[![Dependencies Status](http://jarkeeper.com/r0man/hal-clj/status.png)](http://jarkeeper.com/r0man/hal-clj)
+  [![Build Status](https://travis-ci.org/r0man/hal-clj.png)](https://travis-ci.org/r0man/hal-clj)
+  [![Dependencies Status](http://jarkeeper.com/r0man/hal-clj/status.png)](http://jarkeeper.com/r0man/hal-clj)
 
 A Clojure library to build HAL maps.
 

@@ -3,7 +3,7 @@
   :url "https://github.com/r0man/hal-clj"
   :license {:name "Eclipse Public License"
             :url "https://www.eclipse.org/legal/epl-v10.html"}
-  :dependencies [[noencore "0.1.17"]
+  :dependencies [[noencore "0.1.18"]
                  [org.clojure/clojure "1.6.0"]
                  [org.clojure/clojurescript "0.0-2371" :scope "provided"]]
   :aliases {"ci" ["do" ["difftest"] ["lint"]]

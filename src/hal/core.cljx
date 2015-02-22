@@ -9,15 +9,15 @@
 
 (defn embedded
   ([res]
-     (:_embedded res))
+   (:_embedded res))
   ([res k]
-     (get (embedded res) k)))
+   (get (embedded res) k)))
 
 (defn links
   ([res]
-     (:_links res))
+   (:_links res))
   ([res k]
-     (get (links res) k)))
+   (get (links res) k)))
 
 (defn href [res k]
   (:href (get (links res) k)))
@@ -27,7 +27,9 @@
   (reduce
    (fn [res [k href]]
      (if-not (blank? href)
-       (assoc-in res [:_links k :href] href)
+       (-> (assoc-in res [:_links k :href] href)
+           (cond-> (map? (get-in res [:_embedded k]))
+             (assoc-in [:_embedded k :_links :self :href] href)))
        res))
    res (partition 2 kvs)))
 

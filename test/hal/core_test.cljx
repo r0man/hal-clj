@@ -29,7 +29,23 @@
            :continent "http://example.com/continents/1"
            :country "http://example.com/country/1")
          {:_links {:continent {:href "http://example.com/continents/1"}
-                   :country {:href "http://example.com/country/1"}}})))
+                   :country {:href "http://example.com/country/1"}}}))
+  (is (= (hal/with-hrefs
+           {:_embedded
+            {:continent {:id 1}
+             :country {:id 2}}}
+           :continent "http://example.com/continents/1"
+           :country "http://example.com/country/2")
+         {:_links
+          {:country {:href "http://example.com/country/2"}
+           :continent {:href "http://example.com/continents/1"}}
+          :_embedded
+          {:continent
+           {:_links {:self {:href "http://example.com/continents/1"}}
+            :id 1}
+           :country
+           {:_links {:self {:href "http://example.com/country/2"}}
+            :id 2}}})))
 
 (deftest test-with-embedded
   (is (= (hal/with-embedded {}

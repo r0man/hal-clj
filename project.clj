@@ -1,4 +1,4 @@
-(defproject hal-clj "0.1.13"
+(defproject hal-clj "0.1.14-SNAPSHOT"
   :description "Clojure library for the Hypertext Application Language"
   :url "https://github.com/r0man/hal-clj"
   :author "r0man"

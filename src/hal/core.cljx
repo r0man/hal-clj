@@ -7,6 +7,9 @@
   {:page :page
    :per-page :per-page})
 
+(defn self-href [resource]
+  (-> resource :_links :self :href))
+
 (defn embedded
   ([res]
    (:_embedded res))

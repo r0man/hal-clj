@@ -1,7 +1,7 @@
 (ns hal.core
   (:refer-clojure :exclude [keys vals])
   (:require [clojure.string :refer [blank?]]
-            [no.en.core :refer [format-url parse-integer]]))
+            [no.en.core :as noencore]))
 
 (def ^:dynamic *defaults*
   {:page :page
@@ -55,7 +55,7 @@
 
 (defn- extract-page [req & [opts]]
   (let [k (:page (merge *defaults* opts))]
-    [k (parse-integer (get-in req [:query-params k]))]))
+    [k (noencore/parse-integer (get-in req [:query-params k]))]))
 
 (defn next-url
   "Build the URL for the next HAL resources from the Ring `request`."
@@ -63,7 +63,7 @@
   (if-not (blank? (:uri req))
     (let [[k v] (extract-page req opts)]
       (-> (assoc-in req [:query-params k] (inc (or v 1)))
-          (format-url)))))
+          (noencore/format-url)))))
 
 (defn prev-url
   "Build the URL for the previous HAL resources from the Ring `request`."
@@ -72,20 +72,20 @@
     (let [[k v] (extract-page req opts)]
       (if (and v (> v 1))
         (-> (assoc-in req [:query-params k] (dec v))
-            (format-url))))))
+            (noencore/format-url))))))
 
 (defn resource
   "Make a HAL resource for the Ring request `req` and the
   resource `res`."
   [req res & [opts]]
-  (-> (with-hrefs res :self (format-url req))))
+  (-> (with-hrefs res :self (noencore/format-url req))))
 
 (defn resources
   "Make a HAL resource for the Ring request `req` and the resources
   `coll`."
   [req name coll & [opts]]
   (-> (with-hrefs {}
-        :self (format-url req)
+        :self (noencore/format-url req)
         :next (next-url req opts)
         :prev (prev-url req opts))
       (with-embedded name coll)))

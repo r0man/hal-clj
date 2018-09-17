@@ -5,37 +5,33 @@
   :min-lein-version "2.0.0"
   :license {:name "Eclipse Public License"
             :url "http://www.eclipse.org/legal/epl-v10.html"}
-  :dependencies [[noencore "0.1.20"]
-                 [org.clojure/clojure "1.6.0"]
-                 [org.clojure/clojurescript "0.0-3165" :scope "provided"]]
-  :aliases {"cleantest" ["do" "clean," "cljx" "once," "test," "cljsbuild" "test"]
-            "ci" ["do" ["cleantest"] ["lint"]]
-            "lint" ["do"  ["eastwood"]]}
-  :cljx {:builds [{:source-paths ["src"]
-                   :output-path "target/classes"
-                   :rules :clj}
-                  {:source-paths ["src"]
-                   :output-path "target/classes"
-                   :rules :cljs}
-                  {:source-paths ["test"]
-                   :output-path "target/test-classes"
-                   :rules :clj}
-                  {:source-paths ["test"]
-                   :output-path "target/test-classes"
-                   :rules :cljs}]}
-  :cljsbuild {:builds [{:source-paths ["target/classes" "target/test-classes"]
+  :dependencies [[noencore "0.1.20" :exclusions [org.clojure/clojure]]]
+  :aliases {"phantom-test" ["with-profile" "+dev" "do" ["clean"] ["doo" "phantom" "test" "once"]]
+            "node-test" ["with-profile" "+dev" "do" ["clean"] ["doo" "node" "node-test" "once"]]
+            "cleantest" ["with-profile" "+dev" "do"
+                         ["clean"]
+                         ["doo" "phantom" "test" "once"]
+                         ["doo" "node" "node-test" "once"]]
+            "ci" ["with-profile" "+dev" "do" ["cleantest"] ["lint"]]
+            "lint" ["with-profile" "+dev" "eastwood"]}
+  :cljsbuild {:builds [{:id "test"
+                        :source-paths ["src" "test"]
                         :compiler {:output-to "target/testable.js"
+                                   :output-dir "target"
+                                   :main hal.test-runner
                                    :optimizations :advanced
-                                   :pretty-print true}}]
-              :test-commands {"node" ["node" :node-runner "target/testable.js"]
-                              "phantom" ["phantomjs" :runner "target/testable.js"]}}
+                                   :pretty-print true}}
+                       {:id "node-test"
+                        :source-paths ["src" "test"]
+                        :compiler {:output-to "target/node-testable.js"
+                                   :output-dir "target"
+                                   :main hal.test-runner
+                                   :target :nodejs}}]}
   :deploy-repositories [["releases" :clojars]]
-  :prep-tasks [["cljx" "once"] "javac" "compile"]
-  :profiles {:dev {:plugins [[com.cemerick/clojurescript.test "0.3.3"]
-                             [com.cemerick/piggieback "0.2.1"]
-                             [com.keminglabs/cljx "0.6.0"]
-                             [jonase/eastwood "0.2.1"]
-                             [lein-cljsbuild "1.0.5"]
+  :profiles {:dev {:plugins [[jonase/eastwood "0.2.1"]
+                             [lein-doo "0.1.10"]
+                             [lein-cljsbuild "1.1.7"]
                              [lein-difftest "2.0.0"]]
-                   :repl-options {:nrepl-middleware [cljx.repl-middleware/wrap-cljx]}
-                   :test-paths ["target/test-classes"]}})
+                   :dependencies [[org.clojure/clojure "1.9.0"]
+                                  [org.clojure/clojurescript "1.10.339"]
+                                  [cider/piggieback "0.3.9" :exclusions [org.clojure/clojurescript]]]}})

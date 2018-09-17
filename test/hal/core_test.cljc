@@ -1,9 +1,6 @@
 (ns hal.core-test
-  #+cljs (:require-macros [cemerick.cljs.test :refer [are is deftest testing]])
   (:require [hal.core :as hal]
-            #+clj [clojure.test :refer :all]
-            #+clj [clojure.pprint :refer [pprint]]
-            #+cljs [cemerick.cljs.test :as t]))
+            [clojure.test :as t #?(:clj :refer :cljs :refer-macros) [are is deftest testing]]))
 
 (def europe
   (hal/with-hrefs {:name "Europe"}
